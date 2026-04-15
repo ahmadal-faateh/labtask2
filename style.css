@@ -46,6 +46,7 @@ header h1 {
   cursor: pointer;
 }
 
+/* Task counter badge */
 .task-counter {
   background: #547792;
   padding: 0.15rem 0.55rem;
@@ -209,8 +210,8 @@ button {
 .action-btn.delete { border: 1px solid #ef4444; color: #ef4444; }
 .action-btn.delete:hover { background: #ef4444; color: #fff; }
 
-.task-card.fade-out { opacity: 0; transform: scale(0.95);}
-.task-card.is-hidden { display: none; }
+.task-card.fade-out { opacity: 0; transform: scale(0.95);} /* staggered animation for clearDoneTasks() */
+.task-card.is-hidden { display: none; } /* controlled using classList.toggle for priority*/
 
 .modal-overlay {
   position: fixed;

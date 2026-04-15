@@ -1,9 +1,10 @@
-var tasks = [];
+var tasks = []; // store all task in memory
 var nextId = 1;
-var currentMode = 'add'; 
+var currentMode = 'add'; // switch between add and deit mode
 var currentColumn = 'todo';
 var currentEditId = null;
 
+// dom selectors
 var modalOverlay   = document.getElementById('modal-overlay');
 var modalTitle     = document.getElementById('modal-title');
 var titleInput     = document.getElementById('task-title-input');
@@ -16,14 +17,18 @@ var todoList       = document.getElementById('todo-list');
 var inprogressList = document.getElementById('inprogress-list');
 var doneList       = document.getElementById('done-list');
 
+// help to map column identifiers
 function getList(columnId) {
   return { todo: todoList, inprogress: inprogressList, done: doneList }[columnId] || null;
 }
 
+
+// updates the task counter
 function updateCounter() {
   taskCounter.textContent = tasks.length + ' task' + (tasks.length !== 1 ? 's' : '');
 }
 
+// create task card
 function createTaskCard(taskObj) {
   var li = document.createElement('li');
   li.id = "task-" + taskObj.id;
@@ -66,7 +71,8 @@ function createTaskCard(taskObj) {
     desc.textContent = taskObj.description;
     li.appendChild(desc);
   }
-
+  
+  // priority + due date
   var footer = document.createElement('div');
   footer.classList.add('task-footer');
 
@@ -84,9 +90,11 @@ function createTaskCard(taskObj) {
 
   li.appendChild(footer);
 
+  // apply priority filtering
   var f = priorityFilter.value;
   li.classList.toggle('is-hidden', f !== 'all' && f !== taskObj.priority);
 
+  // double click edit title
   titleSpan.addEventListener('dblclick', function () {
     var input = document.createElement('input');
     input.classList.add('task-title-input');
@@ -117,6 +125,7 @@ function createTaskCard(taskObj) {
   return li;
 }
 
+// Add task
 function addTask(columnId, taskObj) {
   tasks.push(taskObj);
   var list = getList(columnId);
@@ -124,10 +133,11 @@ function addTask(columnId, taskObj) {
   updateCounter();
 }
 
+// Delete task
 function deleteTask(taskId) {
   var li = document.querySelector('[data-id="' + taskId + '"]');
   if (!li) return;
-  li.classList.add('fade-out');
+  li.classList.add('fade-out'); // css transition making it look smooth
   li.addEventListener('transitionend', function () {
     li.remove();
     tasks = tasks.filter(function (t) { return t.id !== taskId; });
@@ -135,6 +145,7 @@ function deleteTask(taskId) {
   }, { once: true });
 }
 
+// Edit task
 function editTask(taskId) {
   var task = tasks.find(function (t) { return t.id === taskId; });
   if (!task) return;
@@ -149,7 +160,7 @@ function editTask(taskId) {
   titleInput.focus();
 }
 
-
+// Update existing tasks
 function updateTask(taskId, updatedData) {
   var task = tasks.find(function (t) { return t.id === taskId; });
   if (!task) return;
@@ -161,7 +172,7 @@ function updateTask(taskId, updatedData) {
   if (old) old.parentNode.replaceChild(createTaskCard(task), old);
 }
 
-
+// opens the modal to add task
 function openModal(columnId) {
   currentMode = 'add';
   currentColumn = columnId;
@@ -179,6 +190,7 @@ function closeModal() {
   modalOverlay.classList.add('hidden');
 }
 
+// save button logics
 function handleSave() {
   var title = titleInput.value.trim();
   if (!title) { titleInput.focus(); return; }
@@ -198,7 +210,7 @@ function handleSave() {
   closeModal();
 }
 
-
+//only show whats wanted
 function applyFilter() {
   var f = priorityFilter.value;
   document.querySelectorAll('.task-card').forEach(function (card) {
@@ -206,7 +218,7 @@ function applyFilter() {
   });
 }
 
-
+//remove all task under Done with staggered animation
 function clearDoneTasks() {
   doneList.querySelectorAll('.task-card').forEach(function (card, i) {
     setTimeout(function () {
@@ -236,6 +248,8 @@ attachColumnListener(todoList);
 attachColumnListener(inprogressList);
 attachColumnListener(doneList);
 
+
+// event listeners
 document.querySelector('.board').addEventListener('click', function (e) {
   var btn = e.target.closest('.add-task-btn');
   if (btn) openModal(btn.getAttribute('data-column'));
@@ -246,6 +260,8 @@ document.getElementById('modal-save-btn').addEventListener('click', handleSave);
 document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', function (e) { if (e.target === modalOverlay) closeModal(); });
 titleInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') handleSave(); });
+
+
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape' && !modalOverlay.classList.contains('hidden')) closeModal();
 });
