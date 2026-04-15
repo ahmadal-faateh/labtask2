@@ -1,65 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Kanban Style Task Manager</title>
-</head>
-<body>
-	<header>
-        <h1>Task Manager</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kanban Task Board</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
 
-        <span id="taskCounter">Task: 0</span>
-
-        <select id="priorityFilter">
-            <option value="all">All Priorities</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
+    <header>
+      <div class="header-left">
+        <h1>Task Board</h1>
+        <span id="task-counter" class="task-counter">0 tasks</span>
+      </div>
+      <div class="header-right">
+        <label for="priority-filter">Filter:</label>
+        <select id="priority-filter">
+          <option value="all">All Priorities</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
         </select>
+      </div>
     </header>
 
-    <main>
+    <main class="board">
 
-        <section id="todo">
-            <h2>To Do</h2>
-            <ul class="taskList"></ul>
-            <button class="addTaskBtn">+ Add Task</button>
-        </section>
+      <section id="todo">
+        <div class="column-header">
+          <h2>To Do</h2>
+          <button class="add-task-btn" data-column="todo">+ Add Task</button>
+        </div>
+        <ul class="task-list" id="todo-list" ondrop="drop(event)" ondragover="allowDrop(event)"></ul>
+      </section>
 
-        <section id="inprogress">
-            <h2>In Progress</h2>
-            <ul class="taskList"></ul>
-            <button class="addTaskBtn">+ Add Task</button>
-        </section>
+      <section id="inprogress">
+        <div class="column-header">
+          <h2>In Progress</h2>
+          <button class="add-task-btn" data-column="inprogress">+ Add Task</button>
+        </div>
+        <ul class="task-list" id="inprogress-list" ondrop="drop(event)" ondragover="allowDrop(event)"></ul>
+      </section>
 
-        <section id="done">
-            <h2>Done</h2>
-            <ul class="taskList"></ul>
-            <button class="addTaskBtn">+ Add Task</button>
-        </section>
+      <section id="done">
+        <div class="column-header">
+          <h2>Done</h2>
+          <div class="done-header-actions">
+            <button class="add-task-btn" data-column="done">+ Add Task</button>
+            <button id="clear-done-btn" class="clear-done-btn">Clear All</button>
+          </div>
+        </div>
+        <ul class="task-list" id="done-list" ondrop="drop(event)" ondragover="allowDrop(event)"></ul>
+      </section>
 
     </main>
-    <div id="taskModal" class="hidden">
-        <div class="modalContent">
 
-            <h2>Add New Task</h2>
-            <input type="text" id="taskTitle" placeholder="Task Title">
-            <textarea id="taskDescription" placeholder="Task Description"></textarea>
-            <select id="taskPriority">
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-            </select>
-            <input type="date" id="taskDueDate">
-            <div class="modalButton">
-            	<button id="saveTask">Save</button>
-            	<button id="cancelTask">Cancel</button>
-            </div>
+    <div id="modal-overlay" class="modal-overlay hidden">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <h2 id="modal-title">Add Task</h2>
+        <div class="form-group">
+          <label for="task-title-input">Title</label>
+          <input type="text" id="task-title-input" placeholder="Task title..." />
         </div>
+        <div class="form-group">
+          <label for="task-description-input">Description</label>
+          <textarea id="task-description-input" placeholder="Task description..." rows="3"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="task-priority-input">Priority</label>
+            <select id="task-priority-input">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="task-due-input">Due Date</label>
+            <input type="date" id="task-due-input" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="modal-save-btn" class="btn-primary">Save</button>
+          <button id="modal-cancel-btn" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
     </div>
 
     <script src="taskmanager.js"></script>
-	
-</body>
+  </body>
 </html>
